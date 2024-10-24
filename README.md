@@ -92,7 +92,7 @@ Example response:
 - **Method**: `GET`
 - **Description**: Fetches the existing KCC records for the specified customer DID.
 - **Query Parameters**:
-  - `subjectDid`: The DID of the customer.
+  - `subjectDid` (optional): The DID of the customer. Defaults to Alice's DID.
 - **Response**: Returns a list of KCC records.
 
 Example response:
