@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { IDVService } from './idc.service';
+import { IDVService } from './idv.service';
 
 @Module({
   imports: [],
