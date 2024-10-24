@@ -22,9 +22,9 @@ This project showcases how to issue a **Known Customer Credential (KCC)** using 
 
 - **Decentralized Identifier (DID) Creation**: Automatically creates DIDs and DWNs for both the issuer and customers.
 - **Known Customer Credential Issuance**: Issues a Verifiable Credential (VC) JWT that represents the customer's verified identity.
-- **DWN Record Management**: Writes the VC JWT to the customer's DWN and fetches records when required.
 - **Protocol Installation**: Installs the VC protocol in the issuer's DWN to handle communication between different payment applications.
 - **Permission Management**: Obtains the necessary permissions to write records to a customer's DWN using the tbDEX Web5 SDK.
+- **DWN Record Management**: Writes the VC JWT to the customer's DWN and fetches records when required.
 
 ## Setup
 
@@ -70,9 +70,9 @@ npm run start
 ### 1. Issue KCC Credential
 
 - **URL**: `/kcc/issue`
-- **Method**: `POST`
+- **Method**: `GET`
 - **Description**: Issues a Known Customer Credential (KCC) for the specified customer DID.
-- **Body Parameters**:
+- **Query Parameters**:
   - `subjectDid` (optional): The DID of the customer. Defaults to Alice's DID.
 - **Response**: Returns the Record ID of the stored KCC in the customer's DWN.
 
@@ -80,7 +80,9 @@ Example response:
 
 ```json
 {
-  "recordId": "b6a1d2e1-e134-45b2-8d57-48f7cbbe2b64"
+  "data":{
+    "recordId": "b6a1d2e1-e134-45b2-8d57-48f7cbbe2b64"
+  }
 }
 ```
 
@@ -97,7 +99,7 @@ Example response:
 
 ```json
 {
-  "records": [
+  "data": [
     {
       "recordId": "b6a1d2e1-e134-45b2-8d57-48f7cbbe2b64",
       "data": "<VC JWT Data>"
@@ -128,8 +130,8 @@ async getWeb5Connection() {
 
 1. **Create the KCC Credential**: The `KccCredential` class is used to create a credential with required data, including KYC evidence such as document verification and sanction screening.
 2. **Sign the Credential**: The Verifiable Credential is signed using the issuer's Bearer DID.
-3. **Store the Credential**: The signed VC JWT is written as a private record in the customer's DWN.
-4. **Protocol Installation**: The VC protocol is installed in the issuer's DWN for managing KCC issuance and storage.
+3. **Protocol Installation**: The VC protocol is installed in the issuer's DWN for managing KCC issuance and storage.
+4. **Store the Credential**: The signed VC JWT is written as a private record in the customer's DWN.
 
 ## DWN Interaction
 

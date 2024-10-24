@@ -97,7 +97,8 @@ export class AppService {
         },
       ),
     );
-    console.log({ records: loadedRecords });
+
+    return loadedRecords;
   }
 
   async createVcJwtRecord(signedVcJwt: string, subjectDid: string) {

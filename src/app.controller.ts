@@ -47,10 +47,10 @@ export class AppController {
     }
   }
 
-  @Post('/kcc/issue')
+  @Get('/kcc/issue')
   async issueKccCredential(
     @Res() res: Response,
-    @Body('subjectDid') subjectDid: string,
+    @Query('subjectDid') subjectDid: string,
   ) {
     try {
       const data = await this.appService.issueKccCredential(subjectDid);
