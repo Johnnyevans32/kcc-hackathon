@@ -1,73 +1,156 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
-</p>
+# Known Customer Credential (KCC) Issuer Service
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This service provides an implementation of the **tbDEX Web5 SDK** to issue a **Known Customer Credential (KCC)** to customers. The KCC is used to streamline the KYC process across different payment apps, allowing businesses to recognize repeat customers without requiring redundant verification.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Table of Contents
 
-## Description
+- [Introduction](#introduction)
+- [Features](#features)
+- [Setup](#setup)
+- [Usage](#usage)
+- [API Endpoints](#api-endpoints)
+- [Web5 Connection](#web5-connection)
+- [KCC Issuing Flow](#kcc-issuing-flow)
+- [DWN Interaction](#dwn-interaction)
+- [Resources](#resources)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Introduction
 
-## Installation
+This project showcases how to issue a **Known Customer Credential (KCC)** using the **Web5 SDK** in compliance with tbDEX's open messaging protocol. The service creates a Decentralized Identifier (DID) and Decentralized Web Node (DWN) for issuing a Verifiable Credential (VC) to customers who have already completed KYC verification. The VC JWT is stored in the customer's DWN, which they can later present from any payment application.
+
+## Features
+
+- **Decentralized Identifier (DID) Creation**: Automatically creates DIDs and DWNs for both the issuer and customers.
+- **Known Customer Credential Issuance**: Issues a Verifiable Credential (VC) JWT that represents the customer's verified identity.
+- **DWN Record Management**: Writes the VC JWT to the customer's DWN and fetches records when required.
+- **Protocol Installation**: Installs the VC protocol in the issuer's DWN to handle communication between different payment applications.
+- **Permission Management**: Obtains the necessary permissions to write records to a customer's DWN using the tbDEX Web5 SDK.
+
+## Setup
+
+### Prerequisites
+
+- Node.js (v16.x or higher)
+- NPM or Yarn
+- [Web5 SDK](https://github.com/TBD54566975/web5-js)
+
+### Installation
+
+1. Clone the repository:
+
+    ```bash
+    git clone https://github.com/Johnnyevans32/kcc-hackathon.git
+    cd kcc-hackathon
+    ```
+
+2. Install the required dependencies:
+
+    ```bash
+    npm install
+    ```
+
+3. Set up your `.env` file with the following variables:
+
+    ```bash
+    WEB5_DWN_ENDPOINT=https://dwn.gcda.xyz
+    ```
+
+## Usage
+
+### Running the Service
+
+Start the service:
 
 ```bash
-$ npm install
+npm run start
 ```
 
-## Running the app
+## API Endpoints
 
-```bash
-# development
-$ npm run start
+### 1. Issue KCC Credential
 
-# watch mode
-$ npm run start:dev
+- **URL**: `/kcc/issue`
+- **Method**: `POST`
+- **Description**: Issues a Known Customer Credential (KCC) for the specified customer DID.
+- **Body Parameters**:
+  - `subjectDid` (optional): The DID of the customer. Defaults to Alice's DID.
+- **Response**: Returns the Record ID of the stored KCC in the customer's DWN.
 
-# production mode
-$ npm run start:prod
+Example response:
+
+```json
+{
+  "recordId": "b6a1d2e1-e134-45b2-8d57-48f7cbbe2b64"
+}
 ```
 
-## Test
+## 2. Fetch KCC Records
 
-```bash
-# unit tests
-$ npm run test
+- **URL**: `/kcc`
+- **Method**: `GET`
+- **Description**: Fetches the existing KCC records for the specified customer DID.
+- **Query Parameters**:
+  - `subjectDid`: The DID of the customer.
+- **Response**: Returns a list of KCC records.
 
-# e2e tests
-$ npm run test:e2e
+Example response:
 
-# test coverage
-$ npm run test:cov
+```json
+{
+  "records": [
+    {
+      "recordId": "b6a1d2e1-e134-45b2-8d57-48f7cbbe2b64",
+      "data": "<VC JWT Data>"
+    }
+  ]
+}
 ```
 
-## Support
+## Web5 Connection
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+The service uses the Web5 SDK to connect to the Web5 platform, creating a DID and DWN. This connection is initialized when the service starts and stores DID information for use in issuing and managing KCC credentials.
 
-## Stay in touch
+To modify the Web5 connection or DID options, refer to the `getWeb5Connection` method in `AppService`:
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+```typescript
+async getWeb5Connection() {
+  const { web5, did } = await Web5.connect({
+    didCreateOptions: {
+      dwnEndpoints: [process.env.WEB5_DWN_ENDPOINT],
+    },
+  });
+  this.web5 = web5;
+  this.issuerBearerDid = did;
+}
+```
 
-## License
+## KCC Issuing Flow
 
-Nest is [MIT licensed](LICENSE).
+1. **Create the KCC Credential**: The `KccCredential` class is used to create a credential with required data, including KYC evidence such as document verification and sanction screening.
+2. **Sign the Credential**: The Verifiable Credential is signed using the issuer's Bearer DID.
+3. **Store the Credential**: The signed VC JWT is written as a private record in the customer's DWN.
+4. **Protocol Installation**: The VC protocol is installed in the issuer's DWN for managing KCC issuance and storage.
+
+## DWN Interaction
+
+The Decentralized Web Node (DWN) stores and retrieves the customer's Verifiable Credential (VC) JWT. The app interacts with Alice's DWN by:
+
+- Requesting write permission using a GET request to the provided endpoint.
+- Creating records for the VC JWT.
+- Fetching stored records.
+
+The write permission is obtained with the following request:
+
+```typescript
+await axios.get(
+  `https://vc-to-dwn.tbddev.org/authorize?issuerDid=${this.issuerBearerDid.uri}`
+);
+```
+
+## Resources
+
+- [Web5 SDK Documentation](https://github.com/TBD54566975/web5-js)
+- [tbDEX Protocol Documentation](https://developer.tbd.website/docs)
+- [DID (Decentralized Identifier) Spec](https://www.w3.org/TR/did-core/)
+- [Verifiable Credentials Spec](https://www.w3.org/TR/vc-data-model/)
+
