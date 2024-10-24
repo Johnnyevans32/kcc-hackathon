@@ -22,7 +22,7 @@ export class AppService {
   }
 
   async onModuleInit() {
-    await this.getWeb5Connection();
+    await this.setupWeb5Connection();
   }
 
   async issueKccCredential(_subjectDid?: string) {
@@ -172,7 +172,7 @@ export class AppService {
     }
   }
 
-  async getWeb5Connection() {
+  async setupWeb5Connection() {
     console.log('connecting to web5');
     const { web5, did } = await Web5.connect({
       didCreateOptions: {

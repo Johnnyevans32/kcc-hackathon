@@ -10,7 +10,7 @@ export class IDVService {
 
   constructor(private appService: AppService) {}
   async siopV2AuthRequest() {
-    const { issuerBearerDid } = await this.appService.getWeb5Connection();
+    const { issuerBearerDid } = await this.appService.setupWeb5Connection();
     // Construct the SIOPv2 Authorization Request
     const siopRequestPayload = {
       client_id: issuerBearerDid.uri, // Issuer's Decentralized Identifier string
@@ -130,7 +130,7 @@ export class IDVService {
       );
     }
 
-    const { issuerBearerDid } = await this.appService.getWeb5Connection();
+    const { issuerBearerDid } = await this.appService.setupWeb5Connection();
     const exp = Math.floor(Date.now() / 1000) + 30 * 60; // plus 30 minutes
     const claims = {
       iss: issuerBearerDid.uri,

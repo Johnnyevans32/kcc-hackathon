@@ -20,10 +20,10 @@ This project showcases how to issue a **Known Customer Credential (KCC)** using 
 
 ## Features
 
-- **Decentralized Identifier (DID) Creation**: Automatically creates DIDs and DWNs for both the issuer and customers.
+- **Decentralized Identifier (DID) Creation**: Automatically creates DIDs and DWNs for the issuer.
 - **Known Customer Credential Issuance**: Issues a Verifiable Credential (VC) JWT that represents the customer's verified identity.
-- **Protocol Installation**: Installs the VC protocol in the issuer's DWN to handle communication between different payment applications.
-- **Permission Management**: Obtains the necessary permissions to write records to a customer's DWN using the tbDEX Web5 SDK.
+- **Protocol Installation**: Installs the VC protocol in the issuer's DWN to handle communication between the actors in the DWN.
+- **Permission Management**: Obtains the necessary permissions to write records to a customer's DWN using the Web5 SDK.
 - **DWN Record Management**: Writes the VC JWT to the customer's DWN and fetches records when required.
 
 ## Setup
@@ -112,10 +112,10 @@ Example response:
 
 The service uses the Web5 SDK to connect to the Web5 platform, creating a DID and DWN. This connection is initialized when the service starts and stores DID information for use in issuing and managing KCC credentials.
 
-To modify the Web5 connection or DID options, refer to the `getWeb5Connection` method in `AppService`:
+To modify the Web5 connection or DID options, refer to the `setupWeb5Connection` method in `AppService`:
 
 ```typescript
-async getWeb5Connection() {
+async setupWeb5Connection() {
   const { web5, did } = await Web5.connect({
     didCreateOptions: {
       dwnEndpoints: [process.env.WEB5_DWN_ENDPOINT],
@@ -131,7 +131,9 @@ async getWeb5Connection() {
 1. **Create the KCC Credential**: The `KccCredential` class is used to create a credential with required data, including KYC evidence such as document verification and sanction screening.
 2. **Sign the Credential**: The Verifiable Credential is signed using the issuer's Bearer DID.
 3. **Protocol Installation**: The VC protocol is installed in the issuer's DWN for managing KCC issuance and storage.
-4. **Store the Credential**: The signed VC JWT is written as a private record in the customer's DWN.
+4. **Write Permission Request**: The issuer requests write permission to the customer's DWN by sending a GET request to the endpoint `https://vc-to-dwn.tbddev.org/authorize?issuerDid=${issuerDidUri}`.
+5. **Store the Credential**: The signed VC JWT is written as a private record in the customer's DWN.
+
 
 ## DWN Interaction
 
@@ -151,8 +153,8 @@ await axios.get(
 
 ## Resources
 
-- [Web5 SDK Documentation](https://github.com/TBD54566975/web5-js)
-- [tbDEX Protocol Documentation](https://developer.tbd.website/docs)
+- [Web5 SDK Github](https://github.com/TBD54566975/web5-js)
+- [tbd Documentation](https://developer.tbd.website/docs)
 - [DID (Decentralized Identifier) Spec](https://www.w3.org/TR/did-core/)
 - [Verifiable Credentials Spec](https://www.w3.org/TR/vc-data-model/)
 
