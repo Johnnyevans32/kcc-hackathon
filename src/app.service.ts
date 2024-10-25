@@ -4,7 +4,7 @@ import axios from 'axios';
 import { KccCredential } from './kcc';
 import { Web5 } from '@web5/api';
 import { VcProtocolDefinition } from './vc-protocol';
-import { Web5PlatformAgent } from '@web5/agent';
+import { DwnDateSort, Web5PlatformAgent } from '@web5/agent';
 import { BearerDid } from '@web5/dids';
 
 @Injectable()
@@ -83,6 +83,7 @@ export class AppService {
           protocolPath: 'credential',
           schema: VcProtocolDefinition.types.credential.schema,
         },
+        dateSort: DwnDateSort.CreatedDescending,
       },
     });
 
@@ -90,12 +91,10 @@ export class AppService {
       throw new BadRequestException(status.detail);
     }
     const loadedRecords = await Promise.all(
-      (records || []).map(
-        async (record: { data: { text: () => any }; id: any }) => {
-          const data = await record.data.text();
-          return { recordId: record.id, data };
-        },
-      ),
+      (records || []).map(async (record) => {
+        const vcJwt = await record.data.text();
+        return { recordId: record.id, vcJwt, createdAt: record.dateCreated };
+      }),
     );
 
     return loadedRecords;

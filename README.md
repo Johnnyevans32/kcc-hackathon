@@ -102,7 +102,8 @@ Example response:
   "data": [
     {
       "recordId": "b6a1d2e1-e134-45b2-8d57-48f7cbbe2b64",
-      "data": "<VC JWT Data>"
+      "vcJwt": "<VC JWT>",
+      "createdAt": "<ISO Date>"
     }
   ]
 }
