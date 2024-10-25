@@ -122,8 +122,13 @@ async setupWeb5Connection() {
       dwnEndpoints: [process.env.WEB5_DWN_ENDPOINT],
     },
   });
+
+  const { did: issuerBearerDid } = await web5.agent.identity.get({
+    didUri: did,
+  });
+
   this.web5 = web5;
-  this.issuerBearerDid = did;
+  this.issuerBearerDid = issuerBearerDid;
 }
 ```
 
